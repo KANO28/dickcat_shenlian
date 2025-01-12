@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小游戏合集</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffb3e3b8;
+        }
+        /* 每个游戏的背景 */
+        header {
+            background-color: #007bff00;
+            color: rgb(0, 0, 0);
+            padding: 20px;
+            text-align: center;
+        }
+       /* 猜数字游戏页面 */
+    #guessGame {
+        background-image: url('https://i.ibb.co/6RpHKdy/Comfy-UI-00053.png'); /* 替换为背景图片的路径 */
+    }
+
+    /* 打地鼠游戏页面 */
+    #whackGame {
+        background-image: url('https://i.ibb.co/GHPhPL8/Comfy-UI-00362.png'); /* 替换为背景图片的路径 */
+    }
+
+    /* 贪吃蛇游戏页面 */
+    #贪吃蛇 {
+        background-image: url('https://i.ibb.co/DGnhfFR/Comfy-UI-00337.png'); /* 替换为背景图片的路径 */
+    }
+    
+
+.hidden-page {
+            display: none;
+            padding: 20px;
+            text-align: center;
+            background-color: #fff;
+            position: relative;
+             padding-bottom: 120px;  /* 给页面内容添加底部间距 */
+
+
+        }
+        .hidden-page.active {
+            display: block;
+        }
+     /* 只有 active 类的页面才会显示 */
+     .container.active {
+            display: block;
+        }
+
+        /* 设置人物图片 */
+        .character-image {
+            position: center;
+         
+            bottom: 10%;
+            left: 10%;
+            width: 250px;
+            animation: shake 1s ease-in-out infinite; /* 应用左右摇晃的动画 */
+        }
+       
+        .character-text1{
+            color: rgb(253, 157, 224);
+            text-shadow: 2px 2px 4px rgb(250, 129, 242);
+            font-weight: bold;
+        }
+        .character-text2{
+            color: rgb(253, 157, 224);
+            text-shadow: 2px 2px 4px rgb(250, 129, 242);
+            font-weight: bold;
+        }
+        /* 定义摇晃动画 */
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-10px);
+            }
+            50% {
+                transform: translateX(10px);
+            }
+            75% {
+                transform: translateX(-10px);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+        canvas {
+            border: 2px solid #333;
+         
+            display: block;
+            margin: 20px auto;
+            background-color: #0000008f;
+        }
+         .game-info {
+            font-size: 20px;
+            margin: 10px;
+        }
+        nav {
+            background-color: hwb(321 60% 0% / 0.453);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .container {
+            display: none;
+            padding: 20px;
+            text-align: center;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            padding-bottom: 200px;  /* 给页面内容添加底部间距 */
+
+
+        }
+        .active {
+            display: block;
+        }
+        /* 打地鼠游戏区域 */
+        .game-area {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background-color: #f8f8f8b0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .game-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 500px;
+            margin: 20px auto;
+            padding-bottom: 2px; 
+        }
+
+        .game-header {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .scoreboard {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+        .hidden {
+            display: none;
+        }
+        .countdown {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        
+
+        /* 打地鼠游戏样式 */
+        .mole-container {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .mole {
+            width: 50px;
+            height: 50px;
+            background-color: rgb(244, 127, 223);
+            position: absolute;
+            border-radius: 50%;
+            display: none;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .mole:hover {
+            transform: scale(1.2);
+        }
+
+        /* 动画 */
+        @keyframes appear {
+            0% { visibility: hidden; }
+            50% { visibility: visible; }
+            100% { visibility: hidden; }
+        }
+
+        /* 弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+        /* 蛇弹窗*/
+        #winModal, #loseModal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            z-index: 100;
+        }
+        #winModal p, #loseModal p {
+            font-size: 18px;
+        }
+    </style>
+    
+</head>
+
+<header>
+    <h1>与沈恋的游戏对决！</h1>
+<body>
+    <nav>
+        <a href="javascript:void(0)" onclick="showGame('guessGame')">猜数字</a>
+        <a href="javascript:void(0)" onclick="showGame('whackGame')">打地鼠</a>
+        <a href="javascript:void(0)" onclick="showGame('贪吃蛇')">贪吃蛇</a>
+        
+    </nav>
+</header>
+ 
+    <!-- 猜数字游戏 -->
+    <div id="guessGame" class="container active">
+        <h1>猜数字游戏！</h1>
+        <h2>哥哥,猜一个1到100之间的数字吧！:<h2>
+        <input type="number" id="userGuess">
+        <button onclick="checkGuess()">我猜！</button>
+        <p id="feedback"></p>
+        <img src="https://i.ibb.co/H79KVnB/Comfy-UI-00343.png" alt="人物1" class="character-image">
+        <div class="character-text1">小菜一碟！</div> <!-- 这里是人物下方的文本 -->
+    </div>
+
+    <!-- 打地鼠游戏 -->
+    <div id="whackGame" class="container">
+        <h1>打地鼠</h1>
+        <div class="game-container">
+        <span id="score">分数: 0</span>
+        <span id="time">倒计时: 30秒</span>
+    </div>
+        <div id="whack-a-mole-game" class="game-area"></div>
+        <img src="https://i.ibb.co/xz8qsNJ/Comfy-UI-00357.png" alt="人物2" class="character-image">
+        <div class="character-text1">游戏才刚刚开始哦！</div> <!-- 这里是人物下方的文本 -->
+
+        <!-- 游戏结束的自定义弹出框 -->
+<div id="game-over-modal" class="modal">
+<div class="modal-content">
+    <p id="game-over-message"></p>
+    <button id="button">重新开始</button>
+</div>
+</div>
+</div>
+    <!-- 游蛇 -->
+    <div id="贪吃蛇" class="container">
+        <h1>贪吃蛇</h1>
+        <div class="game-container">
+        <span id="snake_score">吃掉10个食物</span>
+        <span id="snake_time">倒计时: 30秒</span>
+        
+    </div>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <img src="https://i.ibb.co/DGnhfFR/Comfy-UI-00337.png" alt="人物1" class="character-image">
+    <div class="character-text2">唔唔唔唔！！认真模式！</div> <!-- 这里是人物下方的文本 -->
+    <div>
+        <button id="startButton" class="button">开始游戏</button>
+        <button id="restartButton" class="modal">重新开始</button>
+    </div>
+
+    <div id="modal" class="hidden">
+        <p>游戏结束</p>
+        <button class="button" onclick="snake_resetGame()">重新开始</button>
+    </div>
+    </div>
+
+    <!-- 游戏结束弹窗 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <p id="modalMessage"></p>
+            <button onclick="closeModal()">关闭</button>
+        </div>
+    </div>
+ <!-- 隐藏页面 -->
+ <div id="hiddenPage" class="hidden-page">
+    <h2>呜哇！我输了！</h2>
+    <p>哥哥好强！</p>
+</div>
+
+<footer>
+    <p>© 2025 作者：KANO</p>
+</footer>
+    <script>
+        let guessScore = 0;
+        let guessTargetScore = 10;
+        let guessTimeLeft = 30;
+        let guessTimer;
+        let guessGameActive = false;
+
+        function showGame(game) {
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.getElementById(game).classList.add('active');
+        }
+
+        // 猜数字游戏
+        let randomNumber = Math.floor(Math.random() * 100) + 1;
+
+function checkGuess() {
+  let userGuess = document.getElementById("userGuess").value;
+  let feedback = document.getElementById("feedback");
+
+  if (userGuess == randomNumber) {
+    feedback.textContent = "正确!哥哥猜中啦！";
+    feedback.style.color = "green";
+    markGuessGameCompleted(); // 标记游戏完成
+  } else if (userGuess < randomNumber) {
+    feedback.textContent = "太低了！再试试吧";
+    feedback.style.color = "red";
+  } else {
+    feedback.textContent = "太高了！再试试吧";
+    feedback.style.color = "red";
+  }
+}
+
+        // 打地鼠游戏
+        if (document.getElementById('whack-a-mole-game')) {
+    const moleGame = document.getElementById('whack-a-mole-game');
+    const startButton = document.createElement('button');
+    startButton.textContent = '开始游戏';
+    startButton.classList.add('button');
+    moleGame.appendChild(startButton);
+    const scoreDisplay = document.getElementById('score');
+    const timerDisplay = document.getElementById('time');
+  
+
+    const targetScore = 10; // 目标分数
+    let score = 0; // 当前分数
+    let gameTime = 30; // 游戏时间（秒）
+    let moleInterval;
+    let timerInterval;
+    let gameStarted = false;
+
+    // 更新分数显示
+    function updateScore() {
+        scoreDisplay.textContent = `得分: ${score}`;
+    }
+
+    // 更新倒计时显示
+    function updateTimer() {
+        timerDisplay.textContent = `倒计时: ${gameTime}s`;
+    }
+// 游戏结束时显示弹出框
+function showGameOverMessage(message) {
+        const modal = document.getElementById('game-over-modal');
+        const messageElement = document.getElementById('game-over-message');
+        messageElement.textContent = message;
+        modal.style.display = 'flex'; // 显示弹出框
+    }
+    // 重新开始游戏
+    function resetGame() {
+        score = 0;
+        gameTime = 30;
+        updateScore();
+        updateTimer();
+        gameStarted = false;
+        startButton.style.display = 'block'; // 显示开始按钮
+        const modal = document.getElementById('game-over-modal');
+        modal.style.display = 'none'; // 隐藏弹出框
+    }
+    // 启动游戏
+    startButton.addEventListener('click', () => {
+        if (gameStarted) return; // 防止重复点击开始按钮
+        gameStarted = true;
+        score = 0;
+        gameTime = 30;
+        updateScore();
+        updateTimer();
+        startButton.style.display = 'none'; // 点击后按钮消失
+
+        // 开始倒计时
+        timerInterval = setInterval(() => {
+            gameTime--;
+            updateTimer();
+            if (gameTime <= 0) {
+                clearInterval(timerInterval);
+                clearInterval(moleInterval);
+                showGameOverMessage(`游戏结束！最终得分: ${score}`);
+            }
+        }, 1000);
+
+        // 每隔1秒随机生成一个地鼠
+        moleInterval = setInterval(() => {
+            randomPosition();
+        }, 1000);
+    });
+
+    // 随机生成地鼠的位置
+    function randomPosition() {
+        let mole = document.createElement('div');
+        mole.classList.add('mole');
+        moleGame.appendChild(mole);
+
+        let randomX = Math.floor(Math.random() * (moleGame.clientWidth - 50));
+        let randomY = Math.floor(Math.random() * (moleGame.clientHeight - 50));
+        mole.style.left = randomX + 'px';
+        mole.style.top = randomY + 'px';
+        mole.style.display = 'block';
+
+        mole.addEventListener('click', () => {
+            score++;
+            updateScore();
+            mole.style.display = 'none'; // 地鼠被点击后消失
+            if (score >= targetScore) {
+                clearInterval(timerInterval);
+                clearInterval(moleInterval);
+                showGameOverMessage(`恭喜你达成目标！最终得分: ${score}`);
+                markWhackGameCompleted();
+            }
+        });
+
+        setTimeout(() => {
+            mole.style.display = 'none';
+        }, 800); // 地鼠在0.8秒后消失
+    }
+
+   
+
+    // 初始分数和倒计时显示
+    updateScore();
+    updateTimer();
+// 绑定重新开始按钮的事件
+const restartButton = document.getElementById('button');
+    restartButton.addEventListener('click', resetGame);
+}
+
+        //蛇
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startButton = document.getElementById('startButton');
+        const restartButton = document.getElementById('restartButton');
+        const scoreElement = document.getElementById('snake_score');
+        const timeElement = document.getElementById('snake_time');
+        const winModal = document.getElementById('modal');
+        const loseModal = document.getElementById('modal');
+
+        const gridSize = 20;
+        const targetScore = 10;
+        let snake, food, snake_score, timeLeft, gameInterval, countdownInterval;
+        let isGameOver = false;
+        window.addEventListener('resize', initGame);  // 窗口大小调整时重新初始化游戏
+
+        // 初始化蛇
+        function initGame() {
+            snake = [
+                { x: 9 * gridSize, y: 9 * gridSize }
+            ];
+            snake_score = 0;
+            timeLeft = 30;
+            isGameOver = false;
+            updateScore();
+            updateTime();
+
+            clearInterval(gameInterval);
+            clearInterval(countdownInterval);
+
+            gameInterval = setInterval(gameLoop, 100);
+            countdownInterval = setInterval(countdown, 1000);
+            generateFood();
+            const canvasWidth = window.innerWidth * 0.8;  // 设置canvas宽度为屏幕宽度的80%
+    const canvasHeight = window.innerHeight * 0.6; // 设置canvas高度为屏幕高度的60%
+    
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+
+    // 重新计算网格大小（根据canvas的宽高比）
+    gridSize = Math.floor(canvas.width / 20); // 网格大小取决于canvas的宽度
+    initSnakeAndFood(); // 初始化蛇和食物
+        }
+
+        // 游戏主循环
+        function gameLoop() {
+            if (isGameOver) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            moveSnake();
+            checkCollision();
+            drawSnake();
+            drawFood();
+        }
+
+        // 移动蛇
+        function moveSnake() {
+    const head = Object.assign({}, snake[0]); // 复制蛇头
+
+    // 更新蛇头方向
+    if (head.direction === 'left') head.x -= gridSize;
+    if (head.direction === 'right') head.x += gridSize;
+    if (head.direction === 'up') head.y -= gridSize;
+    if (head.direction === 'down') head.y += gridSize;
+
+    // 检查蛇头是否碰到食物
+    if (head.x === food.x && head.y === food.y) {
+        snake_score++; // 吃到食物，增加分数
+        updateScore(); // 更新分数显示
+        generateFood(); // 重新生成食物
+        if (snake_score === targetScore) {
+            clearInterval(gameInterval);
+            clearInterval(countdownInterval);
+            winModal.classList.remove('hidden');
+            restartButton.classList.remove('hidden');
+            markSnakeGameCompleted();
+        }
+    } else {
+        snake.pop(); // 吃不到食物时，删除蛇尾
+    }
+
+    // 添加新的蛇头到蛇身
+    snake.unshift(head);
+
+    // 检查蛇是否碰到自己或墙壁
+    checkCollision();
+}
+
+
+
+
+        // 更新分数
+        function updateScore() {
+            scoreElement.textContent = `分数: ${snake_score}`;
+        }
+
+        // 更新倒计时
+        function updateTime() {
+            timeElement.textContent = `倒计时: ${timeLeft}秒`;
+        }
+
+        // 倒计时
+        function countdown() {
+            if (isGameOver || timeLeft === 0) {
+                clearInterval(countdownInterval);
+                if (snake_score < targetScore) {
+                    loseModal.classList.remove('hidden');
+                    restartButton.classList.remove('hidden');
+                }
+                return;
+            }
+
+            timeLeft--;
+            updateTime();
+        }
+
+        // 检查蛇是否碰到自己或墙壁
+        function checkCollision() {
+    const head = snake[0];
+
+    // 检查蛇头是否碰到边界
+    if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
+        endGame();
+    }
+
+    // 检查蛇是否碰到自己
+    for (let i = 1; i < snake.length; i++) {
+        if (head.x === snake[i].x && head.y === snake[i].y) {
+            endGame();
+        }
+    }
+}
+
+
+        // 结束游戏
+        function endGame() {
+            clearInterval(gameInterval);
+            clearInterval(countdownInterval);
+            isGameOver = true;
+            loseModal.classList.remove('hidden');
+            restartButton.classList.remove('hidden');
+        }
+
+        // 生成食物
+       // 生成食物，确保食物位置在canvas范围内
+function generateFood() {
+    food = {
+        x: Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize,
+        y: Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize
+    };
+
+    // 确保食物不和蛇头重叠
+    for (let i = 0; i < snake.length; i++) {
+        if (snake[i].x === food.x && snake[i].y === food.y) {
+            generateFood(); // 如果食物与蛇身重叠，重新生成
+            return;
+        }
+    }
+}
+
+
+
+        // 绘制蛇
+        function drawSnake() {
+            snake.forEach(segment => {
+                ctx.fillStyle = '#00FF00';
+                ctx.fillRect(segment.x, segment.y, gridSize, gridSize);
+            });
+        }
+
+        // 绘制食物
+        function drawFood() {
+            ctx.fillStyle = '#FF0000';
+            ctx.fillRect(food.x, food.y, gridSize, gridSize);
+        }
+
+        // 重置游戏
+        function snake_resetGame() {
+            winModal.classList.add('hidden');
+            loseModal.classList.add('hidden');
+            restartButton.classList.add('hidden');
+            startButton.classList.remove('hidden');
+        }
+
+        // 监听键盘事件控制蛇的方向
+        document.addEventListener('keydown', event => {
+            if (isGameOver) return;
+
+            if (event.key === 'ArrowLeft' && snake[0].direction !== 'right') {
+                snake[0].direction = 'left';
+            }
+            if (event.key === 'ArrowRight' && snake[0].direction !== 'left') {
+                snake[0].direction = 'right';
+            }
+            if (event.key === 'ArrowUp' && snake[0].direction !== 'down') {
+                snake[0].direction = 'up';
+            }
+            if (event.key === 'ArrowDown' && snake[0].direction !== 'up') {
+                snake[0].direction = 'down';
+            }
+        });
+
+        // 开始游戏
+        startButton.addEventListener('click', () => {
+            startButton.classList.add('hidden');
+            initGame();
+        });
+
+        // 重新开始
+        restartButton.addEventListener('click', () => {
+            restartButton.classList.add('hidden');
+            initGame();
+        });
+
+
+        // 弹窗
+        function showModal(message) {
+            document.getElementById("modalMessage").textContent = message;
+            document.getElementById("modal").classList.add("active");
+        }
+
+        function closeModal() {
+            document.getElementById("modal").classList.remove("active");
+        }
+
+       // 页面跳转
+       function showGame(game) {
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.getElementById(game).classList.add('active');
+        }
+
+         // 游戏完成标志
+         let isGuessGameCompleted = false;
+        let isWhackGameCompleted = false;
+        let isSnakeGameCompleted = false;
+
+        // 检查是否所有游戏都完成
+        function checkAllGamesCompleted() {
+            if (isGuessGameCompleted && isWhackGameCompleted && isSnakeGameCompleted) {
+                document.getElementById('hiddenPage').classList.add('active'); // 显示隐藏页面
+            }
+        }
+
+        // 猜数字游戏完成时调用
+        function markGuessGameCompleted() {
+            isGuessGameCompleted = true;
+            checkAllGamesCompleted(); // 检查是否所有游戏都完成
+        }
+
+        // 打地鼠游戏完成时调用
+        function markWhackGameCompleted() {
+            isWhackGameCompleted = true;
+            checkAllGamesCompleted(); // 检查是否所有游戏都完成
+        }
+
+        // 贪吃蛇游戏完成时调用
+        function markSnakeGameCompleted() {
+            isSnakeGameCompleted = true;
+            checkAllGamesCompleted(); // 检查是否所有游戏都完成
+        }
+    </script>
+</body>
+</html>
